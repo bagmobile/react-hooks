@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react'
+
+function useLogger(value) {
+    useEffect(() => {
+        console.log(`Value: ${value}`);
+    }, [value]);
+}
+
+function useInput(initialValue) {
+    const [value, setValue] = useState(initialValue);
+    const onChange = event => {
+        setValue(event.target.value);
+    };
+    const clear = () => setValue(``);
+
+    return {
+        bind: {value, onChange},
+        value,
+        clear
+    }
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const input = useInput(``);
+    const lastName = useInput(`---`);
+
+    useLogger(input.value)
+
+    return (
+        <div className={`container pt-3`}>
+            <h1>{input.value} {lastName.value}</h1>
+            <input type={`text`} {...input.bind} /*value={input.value} onChange={input.onChange}*//>
+            <button onClick={() => input.clear()}>Clear</button>
+            <input type={`text`} {...lastName.bind}/>
+        </div>
+    );
 }
 
 export default App;
